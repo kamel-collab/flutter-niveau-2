@@ -4,7 +4,7 @@ import '../widgets/main_bottom_nav.dart';
 import '../widgets/product_card.dart';
 
 /// Displays the placeholder home content with the AppBar and BottomNavigationBar.
-// [Modification] L'�cran pr�sente maintenant la carte produit centr�e pour la phase 2.
+// [Modification] L'�cran pr�sente maintenant une grille responsive pour la phase 3.
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
 
@@ -20,14 +20,37 @@ class MainScreen extends StatelessWidget {
         backgroundColor: Colors.deepOrange,
         elevation: 4,
       ),
-      body: Center(
-        // [Modification] On affiche une carte produit unique pour expliquer la composition d'un item.
-        child: ProductCard(
-          name: demoProduct.name,
-          price: demoProduct.price,
-          imageUrl: demoProduct.imageUrl,
-          onTap: () {},
-        ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          // [Ajout] On calcule le nombre "id�al" de colonnes � partir de la largeur disponible.
+          const double cardWidth = 180;
+          int crossAxisCount = (constraints.maxWidth / cardWidth).floor();
+          if (crossAxisCount < 2) {
+            crossAxisCount = 2;
+          }
+
+          return Padding(
+            padding: const EdgeInsets.all(8),
+            child: GridView.builder(
+              itemCount: demoProductList.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxisCount,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+                childAspectRatio: 0.62,
+              ),
+              itemBuilder: (context, index) {
+                final product = demoProductList[index];
+                return ProductCard(
+                  name: product.name,
+                  price: product.price,
+                  imageUrl: product.imageUrl,
+                  onTap: () {},
+                );
+              },
+            ),
+          );
+        },
       ),
       bottomNavigationBar: const MainBottomNavigationBar(),
     );

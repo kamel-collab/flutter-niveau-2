@@ -18,7 +18,6 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 230,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
