@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// [Ajout] Carte produit interactive utilis�e pour montrer un design moderne d�s la phase 2.
+// [Ajout] Carte produit interactive utilisée pour montrer un design moderne d�s la phase 2.
 class ProductCard extends StatelessWidget {
   final String name;
   final String price;
