@@ -22,23 +22,24 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
-  late Future<bool> _isFavoriteFuture;
+  late bool isFav;
 
   @override
   void initState() {
     super.initState();
-    _isFavoriteFuture = FavoriteService.isFavorite(widget.name);
+    // Instantané : SharedPreferences est déjà chargé au démarrage dans main()
+    isFav = FavoriteService.isFavorite(widget.name);
   }
 
-  Future<void> _toggleFavorite(bool current) async {
-    if (current) {
+  Future<void> _toggleFavorite() async {
+    if (isFav) {
       await FavoriteService.removeFavorite(widget.name);
     } else {
       await FavoriteService.addFavorite(widget.name);
     }
 
     setState(() {
-      _isFavoriteFuture = FavoriteService.isFavorite(widget.name);
+      isFav = !isFav;
     });
   }
 
@@ -61,30 +62,24 @@ class _ProductCardState extends State<ProductCard> {
                   child: Image.network(widget.imageUrl, fit: BoxFit.cover),
                 ),
 
+                // Bouton favoris instantané (plus de FutureBuilder)
                 Positioned(
                   top: 8,
                   right: 8,
-                  child: FutureBuilder<bool>(
-                    future: _isFavoriteFuture,
-                    builder: (context, snapshot) {
-                      final isFav = snapshot.data ?? false;
-
-                      return GestureDetector(
-                        onTap: () => _toggleFavorite(isFav),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.black45,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          padding: const EdgeInsets.all(6),
-                          child: Icon(
-                            isFav ? Icons.favorite : Icons.favorite_border,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
-                      );
-                    },
+                  child: GestureDetector(
+                    onTap: _toggleFavorite,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black45,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      padding: const EdgeInsets.all(6),
+                      child: Icon(
+                        isFav ? Icons.favorite : Icons.favorite_border,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
                   ),
                 ),
               ],
